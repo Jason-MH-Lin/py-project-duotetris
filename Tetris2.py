@@ -245,6 +245,7 @@ def runGame():
     movingLeftP1 = False
     movingRightP1 = False
     canHoldedP1 = True
+    canSWAP=True
     P1Tspin = False
     P2Tspin = False
     P1backToBack = False
@@ -415,7 +416,7 @@ def runGame():
                     DISPLAYSURF.blit(titleSurf, titleRect)
 
                     pressKeySurf, pressKeyRect = makeTextObjs('Press a key to play.', BASICFONT, TEXTCOLOR)
-                    pressKeyRect.center = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2) + 200)
+                    pressKeyRect.center = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2) + 220)
                     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
 
                     while checkForKeyPress() == None:
@@ -446,8 +447,9 @@ def runGame():
 
             if event.type == KEYDOWN:
                 # moving the piece sideways
-                '''
-                if (event.key == K_LSHIFT) and fallingPieceP1 != None and fallingPieceP2 != None:
+                
+                if (event.key == K_LSHIFT) and canSWAP == True and fallingPieceP1 != None and fallingPieceP2 != None: # swap pieces
+                    canSWAP = False
                     swapfallingPiece = fallingPieceP1['shape']
                     fallingPieceP1['shape'] = fallingPieceP2['shape']
                     fallingPieceP2['shape'] = swapfallingPiece
@@ -459,7 +461,17 @@ def runGame():
                     swapfallingPiece = fallingPieceP1['color']
                     fallingPieceP1['color'] = fallingPieceP2['color']
                     fallingPieceP2['color'] = swapfallingPiece
-                    '''
+
+                    fallingPieceP1['y'] = 19
+                    if not isValidPosition(boardP1, fallingPieceP1):
+                        fallingPieceP1['y'] = 18
+                    fallingPieceP2['y'] = 19
+                    if not isValidPosition(boardP2, fallingPieceP2):
+                        fallingPieceP2['y'] = 18
+
+
+
+                
 
 
                 if (event.key == K_LEFT) and fallingPieceP1 != None and fallingPieceP2 != None:
@@ -524,7 +536,7 @@ def runGame():
                             fallingPieceP2['y'] = 18
 
                 # rotating the piece (if there is room to rotate)
-                elif (event.key == K_x) and fallingPieceP1 != None:
+                elif (event.key == K_x) and fallingPieceP1 != None and fallingPieceP2 != None:
                     P1Tspin = False
                     if not isValidPosition(boardP1, fallingPieceP1, adjY=1):
                         lastFallTimeP1 = time.time() + DELAYLOCKIN - fallFreq
@@ -539,29 +551,6 @@ def runGame():
                                 P1Tspin = True
                     else:
                         superRotationSystem(boardP1, fallingPieceP1, spinDirectionP1)
-                elif (event.key == K_z) and fallingPieceP1 != None: # rotate the other direction
-                    P1Tspin = False
-                    if not isValidPosition(boardP1, fallingPieceP1, adjY=1):
-                        lastFallTimeP1 = time.time() + DELAYLOCKIN - fallFreq
-                    spinDirectionP1 = 'CCW'
-                    fallingPieceP1['rotation'] = (fallingPieceP1['rotation'] - 1) % len(PIECES[fallingPieceP1['shape']])
-                    if fallingPieceP1['shape'] == 'T':
-                        if isValidPosition(boardP1, fallingPieceP1) and not isValidPosition(boardP1, fallingPieceP1, adjY=-1) and is3ConnerRule(boardP1, fallingPieceP1):
-                            P1Tspin = True
-                        elif not isValidPosition(boardP1, fallingPieceP1):
-                            superRotationSystem(boardP1, fallingPieceP1, spinDirectionP1)
-                            if is3ConnerRule(boardP1, fallingPieceP1):
-                                P1Tspin = True
-                    else:
-                        superRotationSystem(boardP1, fallingPieceP1, spinDirectionP1)
-                elif (event.key == K_a) and fallingPieceP1 != None: # rotate the other direction
-                    if not isValidPosition(boardP1, fallingPieceP1, adjY=1):
-                        lastFallTimeP1 = time.time() + DELAYLOCKIN - fallFreq
-                    fallingPieceP1['rotation'] = (fallingPieceP1['rotation'] + 2) % len(PIECES[fallingPieceP1['shape']])
-                    if not isValidPosition(boardP1, fallingPieceP1):
-                        fallingPieceP1['rotation'] = (fallingPieceP1['rotation'] - 2) % len(PIECES[fallingPieceP1['shape']])
-
-                elif (event.key == K_x) and fallingPieceP2 != None:
                     P2Tspin = False
                     if not isValidPosition(boardP2, fallingPieceP2, adjY=1):
                         lastFallTimeP2 = time.time() + DELAYLOCKIN - fallFreq
@@ -576,7 +565,21 @@ def runGame():
                                 P2Tspin = True
                     else:
                         superRotationSystem(boardP2, fallingPieceP2, spinDirectionP2)
-                elif (event.key == K_z) and fallingPieceP2 != None: # rotate the other direction
+                elif (event.key == K_z) and fallingPieceP1 != None and fallingPieceP2 != None: # rotate the other direction
+                    P1Tspin = False
+                    if not isValidPosition(boardP1, fallingPieceP1, adjY=1):
+                        lastFallTimeP1 = time.time() + DELAYLOCKIN - fallFreq
+                    spinDirectionP1 = 'CCW'
+                    fallingPieceP1['rotation'] = (fallingPieceP1['rotation'] - 1) % len(PIECES[fallingPieceP1['shape']])
+                    if fallingPieceP1['shape'] == 'T':
+                        if isValidPosition(boardP1, fallingPieceP1) and not isValidPosition(boardP1, fallingPieceP1, adjY=-1) and is3ConnerRule(boardP1, fallingPieceP1):
+                            P1Tspin = True
+                        elif not isValidPosition(boardP1, fallingPieceP1):
+                            superRotationSystem(boardP1, fallingPieceP1, spinDirectionP1)
+                            if is3ConnerRule(boardP1, fallingPieceP1):
+                                P1Tspin = True
+                    else:
+                        superRotationSystem(boardP1, fallingPieceP1, spinDirectionP1)
                     P2Tspin = False
                     if not isValidPosition(boardP2, fallingPieceP2, adjY=1):
                         lastFallTimeP2 = time.time() + DELAYLOCKIN - fallFreq
@@ -591,7 +594,12 @@ def runGame():
                                 P2Tspin = True
                     else:
                         superRotationSystem(boardP2, fallingPieceP2, spinDirectionP2)
-                elif (event.key == K_a) and fallingPieceP2 != None: # rotate the other direction
+                elif (event.key == K_a) and fallingPieceP1 != None and fallingPieceP2 != None: # rotate the other direction
+                    if not isValidPosition(boardP1, fallingPieceP1, adjY=1):
+                        lastFallTimeP1 = time.time() + DELAYLOCKIN - fallFreq
+                    fallingPieceP1['rotation'] = (fallingPieceP1['rotation'] + 2) % len(PIECES[fallingPieceP1['shape']])
+                    if not isValidPosition(boardP1, fallingPieceP1):
+                        fallingPieceP1['rotation'] = (fallingPieceP1['rotation'] - 2) % len(PIECES[fallingPieceP1['shape']])
                     if not isValidPosition(boardP2, fallingPieceP2, adjY=1):
                         lastFallTimeP2 = time.time() + DELAYLOCKIN - fallFreq
                     fallingPieceP2['rotation'] = (fallingPieceP2['rotation'] + 2) % len(PIECES[fallingPieceP2['shape']])
@@ -639,6 +647,7 @@ def runGame():
                             garbageQueueForP2.append(lineSentToP2)
                     P1Tspin = False
                     canHoldedP1 = True
+                    canSWAP = True
                     if P1PerfectClear:
                         P1PCTimer = time.time()
                     if P1backToBackPrint:
@@ -792,6 +801,7 @@ def runGame():
                         garbageQueueForP2.append(lineSentToP2)
                 P1Tspin = False
                 canHoldedP1 = True
+                canSWAP = True
                 if P1PerfectClear:
                     P1PCTimer = time.time()
                 if P1backToBackPrint:
@@ -1532,6 +1542,7 @@ def drawInstructions(x, y, color):
     drawText('a: Clockwise', x, y + 220, color)
     drawText('x: Counter clockwise', x, y + 240, color)
     drawText('z: Rotate 180', x, y + 260, color)
+    drawText('Lshift: swap between pieces', x, y + 280, color)
 
 
 def drawSpecialMove(x, y, ComboCounter, Tspin, backToBack, board, tetris, PC, combo, mini, single, double, triple):
