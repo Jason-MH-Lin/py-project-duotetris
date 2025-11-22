@@ -1509,14 +1509,15 @@ def drawInstructions(x, y, color):
     drawText('p: Pause', x, y + 40, color)
     drawText('f: Fullscreen', x, y + 60, color)
     drawText('g: Small screen', x, y + 80, color)
-    drawText('P1-e | P2-3: Hold', x, y + 100, color)
-    drawText('P1-space | P2-v: Hard drop', x, y + 120, color)
-    drawText('P1-left | P2-j: Move left', x, y + 140, color)
-    drawText('P1-right | P2-l: Move right', x, y + 160, color)
-    drawText('P1-down | P2-k: Soft drop', x, y + 180, color)
-    drawText('P1-up | P2-i: Clockwise', x, y + 200, color)
-    drawText('P1-w | P2-2: Counter clockwise', x, y + 220, color)
-    drawText('P1-q | P2-1: Rotate 180', x, y + 240, color)
+    drawText('c: Hold for left', x, y + 100, color)
+    drawText('v: Hold for right', x, y + 120, color)
+    drawText('space: Hard drop', x, y + 140, color)
+    drawText('left: Move left', x, y + 160, color)
+    drawText('right: Move right', x, y + 180, color)
+    drawText('down: Soft drop', x, y + 200, color)
+    drawText('a: Clockwise', x, y + 220, color)
+    drawText('x: Counter clockwise', x, y + 240, color)
+    drawText('z: Rotate 180', x, y + 260, color)
 
 
 def drawSpecialMove(x, y, ComboCounter, Tspin, backToBack, board, tetris, PC, combo, mini, single, double, triple):
