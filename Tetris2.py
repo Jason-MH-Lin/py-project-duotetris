@@ -435,19 +435,33 @@ def runGame():
 
                 elif (event.key == K_LEFT):
                     movingLeftP1 = False
+                    movingLeftP2 = False
                 elif (event.key == K_RIGHT):
                     movingRightP1 = False
+                    movingRightP2 = False
                 elif (event.key == K_DOWN):
                     movingDownP1 = False
-                elif (event.key == K_j):
-                    movingLeftP2 = False
-                elif (event.key == K_l):
-                    movingRightP2 = False
-                elif (event.key == K_k):
                     movingDownP2 = False
+                
 
             if event.type == KEYDOWN:
                 # moving the piece sideways
+                '''
+                if (event.key == K_LSHIFT) and fallingPieceP1 != None and fallingPieceP2 != None:
+                    swapfallingPiece = fallingPieceP1['shape']
+                    fallingPieceP1['shape'] = fallingPieceP2['shape']
+                    fallingPieceP2['shape'] = swapfallingPiece
+
+                    swapfallingPiece = fallingPieceP1['rotation']
+                    fallingPieceP1['rotation'] = fallingPieceP2['rotation']
+                    fallingPieceP2['rotation'] = swapfallingPiece
+
+                    swapfallingPiece = fallingPieceP1['color']
+                    fallingPieceP1['color'] = fallingPieceP2['color']
+                    fallingPieceP2['color'] = swapfallingPiece
+                    '''
+
+
                 if (event.key == K_LEFT) and fallingPieceP1 != None and fallingPieceP2 != None:
                     movingRightP1 = False
                     movingLeftP1 = True
@@ -586,24 +600,24 @@ def runGame():
 
 
                 # making the piece fall faster with the down key
-                elif (event.key == K_DOWN) and fallingPieceP1 != None:
+                elif (event.key == K_DOWN) and fallingPieceP1 != None and fallingPieceP2 != None:
                     movingDownP1 = True
+                    movingDownP2 = True
                     if isValidPosition(boardP1, fallingPieceP1, adjY=2):
                         fallingPieceP1['y'] += 2
                     elif isValidPosition(boardP1, fallingPieceP1, adjY=1):
                         fallingPieceP1['y'] += 1
                     lastMoveDownTimeP1 = time.time()
-
-                elif (event.key == K_DOWN) and fallingPieceP2 != None:
-                    movingDownP2 = True
                     if isValidPosition(boardP2, fallingPieceP2, adjY=2):
                         fallingPieceP2['y'] += 2
                     elif isValidPosition(boardP2, fallingPieceP2, adjY=1):
                         fallingPieceP2['y'] += 1
                     lastMoveDownTimeP2 = time.time()
 
+                
+
                 # move the current piece all the way down
-                elif event.key == K_SPACE and fallingPieceP1 != None:
+                elif event.key == K_SPACE and fallingPieceP1 != None and fallingPieceP2 != None:
                     while isValidPosition(boardP1, fallingPieceP1, adjY=1):
                         fallingPieceP1['y'] += 1
                     addToBoard(boardP1, fallingPieceP1)
@@ -666,7 +680,6 @@ def runGame():
                             drawHiddenBoardP1()
                             return # can't fit a new piece on the board, so game over
 
-                elif event.key == K_SPACE and fallingPieceP2 != None:
                     while isValidPosition(boardP2, fallingPieceP2, adjY=1):
                         fallingPieceP2['y'] += 1
                     addToBoard(boardP2, fallingPieceP2)
@@ -727,7 +740,8 @@ def runGame():
                                 for y in range(BOARDHEIGHT):
                                     drawBoxP2(x, y, boardP2[x][y])
                             drawHiddenBoardP2()
-                            return # can't fit a new piece on the board, so game over    
+                            return # can't fit a new piece on the board, so game over
+                        
                 
         # handle moving the piece because of user input
         if (movingLeftP1 or movingRightP1) and time.time() - lastMoveSidewaysTimeP1 > AUTOREPEATRATE and fallingPieceP1 != None:
